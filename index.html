@@ -17,12 +17,15 @@
 <body class="text-gray-800 p-4 md:p-8">
 
   <div class="max-w-7xl mx-auto">
+    <!-- Loading Indicator -->
     <div id="loading" class="flex flex-col justify-center items-center py-32">
       <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-16 w-16 mb-4"></div>
-      <p class="text-gray-500 font-semibold animate-pulse">Mengambil data terbaru dari Server...</p>
+      <p class="text-gray-500 font-semibold animate-pulse">Menarik data dari server...</p>
     </div>
 
     <div id="dashboardContent" class="hidden space-y-6">
+      
+      <!-- HEADER GLOBAL (Statik) -->
       <div class="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden relative">
         <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-50 rounded-full -mr-20 -mt-20 opacity-60 pointer-events-none"></div>
         <div class="absolute bottom-0 left-0 w-64 h-64 bg-teal-50 rounded-full -ml-20 -mb-20 opacity-60 pointer-events-none"></div>
@@ -51,7 +54,7 @@
                 <div class="flex items-center gap-3">
                   <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0"><i class="far fa-calendar-alt"></i></div>
                   <div>
-                    <p class="text-xs text-gray-500 font-semibold">Periode Data</p>
+                    <p class="text-xs text-gray-500 font-semibold">Periode Keseluruhan</p>
                     <p class="font-bold text-gray-700" id="periodeData">-</p>
                   </div>
                 </div>
@@ -62,17 +65,11 @@
                     <a href="https://wa.me/6282152224427" target="_blank" class="font-bold text-green-600 hover:text-green-700 hover:underline">0821-522-AHIBS (24427)</a>
                   </div>
                 </div>
-                <div class="flex items-center gap-3 md:col-span-2">
-                  <div class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center shrink-0"><i class="fas fa-link"></i></div>
-                  <div>
-                    <p class="text-xs text-gray-500 font-semibold">Link Halaman Ini</p>
-                    <a href="https://script.google.com/macros/s/AKfycbyrQn8r7ku3Xduj1deiOcXKUIaLKVHriOEclS9DiHudqVqB_UuIuOIVx4LfIs-s-Wxk/exec" target="_blank" class="font-medium text-blue-500 hover:underline">klik disini</a>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
 
+          <!-- Progress Bar Global -->
           <div class="flex-1 w-full flex flex-col sm:flex-row gap-6">
             <div class="flex-1 flex flex-col justify-center bg-gray-800 text-white rounded-3xl p-6 md:p-8 shadow-lg relative overflow-hidden">
               <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -mr-10 -mt-10"></div>
@@ -111,11 +108,11 @@
               </div>
             </div>
 
+            <!-- QRIS -->
             <div class="w-full sm:w-48 bg-white border-2 border-dashed border-gray-300 rounded-3xl p-4 flex flex-col items-center justify-center bg-qris group hover:border-emerald-500 transition-colors">
               <p class="text-sm font-black text-gray-800 tracking-widest mb-3">KODE QRIS</p>
               <div class="bg-white p-2 rounded-xl shadow-sm border border-gray-100 w-full aspect-square flex items-center justify-center">
-                <!-- URL Gambar sudah diganti ke direct link Google Drive Anda dan efek transparan dihapus -->
-                <img src="https://lh3.googleusercontent.com/d/1mQF86MraEDnJWTCxUM27Xnn26tEGQzOb" alt="QRIS Masjid AHIBS" class="w-full h-full object-contain">
+                <img src="https://drive.google.com/uc?id=1mQF86MraEDnJWTCxUM27Xnn26tEGQzOb" alt="QRIS Masjid AHIBS" class="w-full h-full object-contain">
               </div>
               <p class="text-xs text-center font-semibold text-gray-500 mt-3">Scan untuk Donasi<br>Lebih Mudah</p>
             </div>
@@ -123,6 +120,34 @@
         </div>
       </div>
 
+      <!-- FILTER BAR AREA -->
+      <div class="bg-white rounded-3xl shadow-sm border border-gray-200 p-5 flex flex-col md:flex-row gap-4 justify-between items-center z-20 relative">
+        <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto items-center">
+          
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <input type="date" id="startDate" class="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5 outline-none">
+            <span class="text-gray-400 font-medium">s/d</span>
+            <input type="date" id="endDate" class="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5 outline-none">
+          </div>
+          
+          <select id="monthFilter" class="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:w-auto p-2.5 outline-none font-semibold text-emerald-700">
+            <option value="">-- Filter Per Bulan --</option>
+            <!-- Opsi akan diisi otomatis oleh JavaScript -->
+          </select>
+          
+          <div class="flex gap-2 w-full sm:w-auto">
+            <button id="btnFilter" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl transition text-sm flex items-center justify-center gap-2"><i class="fas fa-filter"></i> Terapkan</button>
+            <button id="btnReset" title="Reset Filter" class="w-full sm:w-auto bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-2.5 px-4 rounded-xl transition text-sm flex items-center justify-center"><i class="fas fa-undo"></i></button>
+          </div>
+        </div>
+        
+        <div class="text-right w-full md:w-auto bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-100">
+          <p class="text-xs text-emerald-600 font-bold uppercase tracking-wider mb-1">Total Periode Terpilih</p>
+          <p class="text-xl font-black text-emerald-700 leading-none" id="filteredTotal">Rp 0</p>
+        </div>
+      </div>
+
+      <!-- GRAFIK & TABEL -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-1 bg-white rounded-3xl shadow-sm p-6 border border-gray-200 flex flex-col">
           <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
@@ -138,7 +163,7 @@
             <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
               <i class="fas fa-list-ul text-emerald-500"></i> Mutasi Rekening
             </h2>
-            <span class="bg-green-100 text-green-800 text-[10px] uppercase font-bold px-3 py-1.5 rounded-full flex items-center gap-1">
+            <span class="bg-green-100 text-green-800 text-[10px] uppercase font-bold px-3 py-1.5 rounded-full flex items-center gap-1" id="statusTabel">
               <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Auto-Sync
             </span>
           </div>
@@ -153,23 +178,30 @@
                 </tr>
               </thead>
               <tbody id="tableBody" class="divide-y divide-gray-100 text-sm">
-                <!-- Data injeksi -->
+                <!-- Data tabel injeksi -->
               </tbody>
             </table>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 
   <script>
+    // --- KONFIGURASI ---
     const TARGET_DANA = 2989940000; 
+    // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI BAWAH INI
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyrQn8r7ku3Xduj1deiOcXKUIaLKVHriOEclS9DiHudqVqB_UuIuOIVx4LfIs-s-Wxk/exec';
 
-    // Masking sesuai kaidah Amiza: A***d Z****i
+    // Variabel Global
+    let allDonationData = [];
+    let myChart = null;
+
+    // --- FUNGSI FORMATTING ---
     function maskName(name) {
       if (!name) return "Hamba Allah";
       let cleanName = name.trim();
-      
       const exceptions = ['HAMBA ALLAH', 'FLIP', 'OVO', 'GOPAY', 'DANA', 'SHOPEEPAY', 'LINKAJA', 'SPAY', 'QRIS'];
       if (exceptions.includes(cleanName.toUpperCase())) return cleanName.toUpperCase();
       
@@ -177,14 +209,8 @@
       let maskedWords = words.map(word => {
         if (word.length <= 1) return word;
         if (word.length === 2) return word[0] + '*';
-        
-        let firstChar = word[0];
-        let lastChar = word[word.length - 1];
-        let middleStars = '*'.repeat(word.length - 2);
-        
-        return firstChar + middleStars + lastChar;
+        return word[0] + '*'.repeat(word.length - 2) + word[word.length - 1];
       });
-      
       return maskedWords.join(' ');
     }
 
@@ -202,77 +228,54 @@
       return `${dd}/${mm}/${yy} ${hh}:${mnt}`;
     }
 
-// GANTI dengan URL Aplikasi Web Google Apps Script Anda yang baru disalin
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyrQn8r7ku3Xduj1deiOcXKUIaLKVHriOEclS9DiHudqVqB_UuIuOIVx4LfIs-s-Wxk/exec';
+    function formatDateInput(dateObj) {
+      let yyyy = dateObj.getFullYear();
+      let mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+      let dd = String(dateObj.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
 
-    fetch(API_URL, {
-      method: 'GET',
-      redirect: 'follow'
-    })
+    // --- FETCH DATA DARI GOOGLE APPS SCRIPT ---
+    fetch(API_URL, { method: 'GET', redirect: 'follow' })
       .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+        if (!response.ok) throw new Error('Koneksi bermasalah');
         return response.json();
       })
       .then(data => {
-        processData(data);
+        if (data && data.error) {
+          showError(data.error);
+          return;
+        }
+        allDonationData = data;
+        
+        renderGlobalHeader(allDonationData);
+        populateMonthOptions(allDonationData);
+        renderDashboard(allDonationData); // Render tabel & grafik awal (Semua Data)
       })
       .catch(error => {
         console.error('Error fetching data:', error);
-        document.getElementById('loading').innerHTML = `
-          <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg max-w-lg mx-auto text-center shadow-sm">
-            <h3 class="text-red-700 font-bold text-lg mb-2"><i class="fas fa-wifi"></i> Gagal Terhubung</h3>
-            <p class="text-red-600">Tidak dapat mengambil data dari server. Pastikan Deploy Apps Script sudah diset ke 'Siapa saja' (Anyone).</p>
-          </div>
-        `;
+        showError("Tidak dapat mengambil data dari server. Pastikan Deploy Apps Script sudah diset ke 'Siapa saja'.");
       });
-    function processData(data) {
-      if (data && data.error) {
-        document.getElementById('loading').innerHTML = `
-          <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg max-w-lg mx-auto text-center shadow-sm">
-            <h3 class="text-red-700 font-bold text-lg mb-2"><i class="fas fa-exclamation-triangle"></i> Gagal Memuat Data</h3>
-            <p class="text-red-600">${data.error}</p>
-          </div>
-        `;
-        return;
-      }
 
+    function showError(msg) {
+      document.getElementById('loading').innerHTML = `
+        <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg max-w-lg mx-auto text-center shadow-sm">
+          <h3 class="text-red-700 font-bold text-lg mb-2"><i class="fas fa-wifi"></i> Gagal Terhubung</h3>
+          <p class="text-red-600">${msg}</p>
+        </div>`;
+    }
+
+    // --- RENDER HEADER GLOBAL (Progress Bar Utama) ---
+    function renderGlobalHeader(data) {
       let grandTotal = 0;
-      let dailyTotals = {};
-      let tableHtml = '';
-      
       let timestamps = data.map(d => d.tanggal);
       let minDate = new Date(Math.min(...timestamps));
       let maxDate = new Date(Math.max(...timestamps));
       
-      data.sort((a, b) => b.tanggal - a.tanggal);
-      let lastDateRendered = '';
-
-      data.forEach((row) => {
-        let dateObj = new Date(row.tanggal);
-        let dateKey = dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').reverse().join('/'); 
-        let timeStr = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-        
-        grandTotal += row.nominal;
-        dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + row.nominal;
-
-        let displayDate = (dateKey !== lastDateRendered) ? dateKey : '';
-        lastDateRendered = dateKey;
-
-        tableHtml += `
-          <tr class="hover:bg-gray-50 transition group">
-            <td class="p-4 font-semibold text-gray-500">${displayDate}</td>
-            <td class="p-4 text-gray-400 group-hover:text-gray-600">${timeStr}</td>
-            <td class="p-4 font-mono font-medium text-gray-700">${maskName(row.nama)}</td>
-            <td class="p-4 text-right font-bold text-emerald-600">${formatRupiah(row.nominal)}</td>
-          </tr>
-        `;
-      });
+      data.forEach(row => { grandTotal += row.nominal; });
 
       let kekurangan = TARGET_DANA - grandTotal;
       if (kekurangan < 0) kekurangan = 0;
-      
       let persenTerkumpul = (grandTotal / TARGET_DANA) * 100;
       let persenKurang = 100 - persenTerkumpul;
       if (persenTerkumpul > 100) persenTerkumpul = 100;
@@ -285,20 +288,65 @@
       document.getElementById('kurangPersen').innerText = persenKurang.toLocaleString('id-ID', { maximumFractionDigits: 2 }) + '%';
       
       setTimeout(() => { document.getElementById('progressBar').style.width = persenTerkumpul + '%'; }, 500);
-
-      document.getElementById('tableBody').innerHTML = tableHtml;
+      
       document.getElementById('loading').style.display = 'none';
       document.getElementById('dashboardContent').classList.remove('hidden');
+    }
+
+    // --- RENDER TABEL & GRAFIK (Bisa di-filter) ---
+    function renderDashboard(dataToRender) {
+      let filteredTotal = 0;
+      let dailyTotals = {};
+      let tableHtml = '';
+      
+      // Clone dan urutkan data terbaru di atas
+      let sortedData = [...dataToRender].sort((a, b) => b.tanggal - a.tanggal);
+      let lastDateRendered = '';
+
+      sortedData.forEach((row) => {
+        let dateObj = new Date(row.tanggal);
+        let dateKey = dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').reverse().join('/'); 
+        let timeStr = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        
+        filteredTotal += row.nominal;
+        dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + row.nominal;
+
+        let displayDate = (dateKey !== lastDateRendered) ? dateKey : '';
+        lastDateRendered = dateKey;
+
+        tableHtml += `
+          <tr class="hover:bg-emerald-50 transition group">
+            <td class="p-4 font-semibold text-gray-500">${displayDate}</td>
+            <td class="p-4 text-gray-400 group-hover:text-gray-600">${timeStr}</td>
+            <td class="p-4 font-mono font-medium text-gray-700">${maskName(row.nama)}</td>
+            <td class="p-4 text-right font-bold text-emerald-600">${formatRupiah(row.nominal)}</td>
+          </tr>
+        `;
+      });
+
+      if (sortedData.length === 0) {
+        tableHtml = `<tr><td colspan="4" class="p-8 text-center text-gray-500 font-semibold italic"><i class="fas fa-folder-open text-2xl mb-2 text-gray-300 block"></i> Tidak ada data donasi pada periode ini.</td></tr>`;
+      }
+
+      document.getElementById('filteredTotal').innerText = formatRupiah(filteredTotal);
+      document.getElementById('tableBody').innerHTML = tableHtml;
 
       renderChart(dailyTotals);
     }
 
+    // --- RENDER GRAFIK CHART.JS ---
     function renderChart(dailyTotals) {
       let sortedDates = Object.keys(dailyTotals).sort();
       let values = sortedDates.map(date => dailyTotals[date]);
 
       const ctx = document.getElementById('donationChart').getContext('2d');
-      new Chart(ctx, {
+      
+      // Hancurkan (destroy) grafik lama jika ada sebelum menggambar yang baru
+      if (myChart) {
+        myChart.destroy();
+      }
+
+      myChart = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: sortedDates,
@@ -335,6 +383,90 @@
         }
       });
     }
+
+    // --- LOGIKA FITUR FILTER ---
+
+    // 1. Isi Dropdown Bulan secara otomatis dari data
+    function populateMonthOptions(data) {
+      let monthsSet = new Set();
+      data.forEach(d => {
+        let dateObj = new Date(d.tanggal);
+        let yyyy = dateObj.getFullYear();
+        let mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+        monthsSet.add(`${yyyy}-${mm}`);
+      });
+      
+      let sortedMonths = Array.from(monthsSet).sort().reverse();
+      let monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+      
+      let select = document.getElementById('monthFilter');
+      sortedMonths.forEach(val => {
+        let [y, m] = val.split('-');
+        let label = `${monthNames[parseInt(m)-1]} ${y}`;
+        let option = document.createElement('option');
+        option.value = val;
+        option.text = label;
+        select.appendChild(option);
+      });
+    }
+
+    // 2. Aksi Tombol Terapkan
+    document.getElementById('btnFilter').addEventListener('click', () => {
+      let sd = document.getElementById('startDate').value;
+      let ed = document.getElementById('endDate').value;
+      let filtered = allDonationData;
+
+      if (sd) {
+        let sDate = new Date(sd).setHours(0,0,0,0);
+        filtered = filtered.filter(d => new Date(d.tanggal).getTime() >= sDate);
+      }
+      if (ed) {
+        let eDate = new Date(ed).setHours(23,59,59,999);
+        filtered = filtered.filter(d => new Date(d.tanggal).getTime() <= eDate);
+      }
+      
+      // Update label Status Filter
+      document.getElementById('statusTabel').innerHTML = '<span class="w-2 h-2 rounded-full bg-orange-500"></span> Filtered';
+      document.getElementById('statusTabel').classList.replace('bg-green-100', 'bg-orange-100');
+      document.getElementById('statusTabel').classList.replace('text-green-800', 'text-orange-800');
+
+      renderDashboard(filtered);
+    });
+
+    // 3. Aksi Tombol Reset
+    document.getElementById('btnReset').addEventListener('click', () => {
+      document.getElementById('startDate').value = '';
+      document.getElementById('endDate').value = '';
+      document.getElementById('monthFilter').value = '';
+      
+      // Kembalikan label Status ke Auto-Sync
+      document.getElementById('statusTabel').innerHTML = '<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Auto-Sync';
+      document.getElementById('statusTabel').classList.replace('bg-orange-100', 'bg-green-100');
+      document.getElementById('statusTabel').classList.replace('text-orange-800', 'text-green-800');
+
+      renderDashboard(allDonationData);
+    });
+
+    // 4. Aksi saat Dropdown Bulan Dipilih
+    document.getElementById('monthFilter').addEventListener('change', (e) => {
+      let val = e.target.value; 
+      if (val) {
+        let parts = val.split('-');
+        let year = parseInt(parts[0]);
+        let month = parseInt(parts[1]);
+        
+        let firstDay = new Date(year, month - 1, 1);
+        let lastDay = new Date(year, month, 0); // Angka 0 akan mengambil hari terakhir dari bulan tersebut
+        
+        // Isi otomatis input kalender s/d
+        document.getElementById('startDate').value = formatDateInput(firstDay);
+        document.getElementById('endDate').value = formatDateInput(lastDay);
+        
+        // Langsung klik otomatis tombol Filter
+        document.getElementById('btnFilter').click();
+      }
+    });
+
   </script>
 </body>
 </html>
