@@ -1,90 +1,187 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#059669" id="metaThemeColor">
   <title>Laporan Infaq Pembangunan Masjid AHIBS</title>
+  
+  <!-- Tailwind CSS & FontAwesome -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            theme: {
+              DEFAULT: 'var(--color-primary)',
+              dark: 'var(--color-primary-dark)',
+              light: 'var(--color-primary-light)',
+            }
+          }
+        }
+      }
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
-    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-    .loader { border-top-color: #10b981; animation: spinner 1.5s linear infinite; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
+    .loader { border-top-color: var(--color-primary); animation: spinner 1.5s linear infinite; }
     @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .bg-qris { background-image: radial-gradient(#d1d5db 1px, transparent 1px); background-size: 10px 10px; }
+    .dark .bg-qris { background-image: radial-gradient(#374151 1px, transparent 1px); }
+
+    /* Variabel Tema Warna */
+    :root {
+      --color-primary: #059669;
+      --color-primary-dark: #047857;
+      --color-primary-light: #ecfdf5;
+      --gradient-from: #059669;
+      --gradient-to: #0d9488;
+    }
+    body[data-theme="ocean"] {
+      --color-primary: #2563eb;
+      --color-primary-dark: #1d4ed8;
+      --color-primary-light: #eff6ff;
+      --gradient-from: #2563eb;
+      --gradient-to: #0ea5e9;
+    }
+    body[data-theme="midnight"] {
+      --color-primary: #d97706;
+      --color-primary-dark: #b45309;
+      --color-primary-light: #fffbeb;
+      --gradient-from: #1f2937;
+      --gradient-to: #111827;
+    }
+    body[data-theme="sunset"] {
+      --color-primary: #c2410c;
+      --color-primary-dark: #9a3412;
+      --color-primary-light: #fff7ed;
+      --gradient-from: #c2410c;
+      --gradient-to: #ea580c;
+    }
   </style>
+
+  <!-- PWA Manifest Dinamis Sederhana -->
+  <link rel="manifest" href="data:application/manifest+json,{
+    'name': 'Infaq Masjid AHIBS',
+    'short_name': 'InfaqAHIBS',
+    'start_url': '.',
+    'display': 'standalone',
+    'background_color': '#f8fafc',
+    'theme_color': '#059669',
+    'icons': [{
+      'src': 'https://lh3.googleusercontent.com/d/1mQF86MraEDnJWTCxUM27Xnn26tEGQzOb',
+      'sizes': '192x192',
+      'type': 'image/png'
+    }]
+  }">
 </head>
-<body class="text-gray-800 p-3 sm:p-6 md:p-8">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 p-3 sm:p-6 md:p-8" data-theme="emerald">
 
   <div class="max-w-7xl mx-auto space-y-4 sm:space-y-6">
     
+    <!-- TOP UTILITIES BAR (Dark Mode, Theme, PWA Install) -->
+    <div class="flex flex-wrap justify-between items-center bg-white dark:bg-slate-900 px-4 py-3 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 gap-3">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+        <span class="text-xs font-bold tracking-wide uppercase text-slate-500 dark:text-slate-400">Masjid Imam An-Nawawi</span>
+      </div>
+      
+      <div class="flex items-center gap-2">
+        <!-- Tombol Install PWA -->
+        <button id="btnInstall" class="hidden items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition shadow-sm">
+          <i class="fas fa-download"></i> Install App
+        </button>
+
+        <!-- Dropdown Admin Tema -->
+        <div class="relative">
+          <button id="btnThemeMenu" class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold px-3 py-2 rounded-xl transition">
+            <i class="fas fa-palette text-theme"></i> <span class="hidden sm:inline">Tema</span>
+          </button>
+          <div id="themeDropdown" class="hidden absolute right-0 mt-2 w-44 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-2 z-50 space-y-1">
+            <button onclick="setTheme('emerald')" class="w-full text-left px-3 py-2 text-xs rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-medium flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-600"></span> Emerald Modern</button>
+            <button onclick="setTheme('ocean')" class="w-full text-left px-3 py-2 text-xs rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-medium flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-600"></span> Ocean Royal</button>
+            <button onclick="setTheme('midnight')" class="w-full text-left px-3 py-2 text-xs rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-medium flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-amber-600"></span> Midnight Luxe</button>
+            <button onclick="setTheme('sunset')" class="w-full text-left px-3 py-2 text-xs rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-medium flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-orange-600"></span> Sunset Warm</button>
+          </div>
+        </div>
+
+        <!-- Toggle Dark/Light Mode -->
+        <button id="btnDarkMode" class="w-9 h-9 flex items-center justify-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition text-slate-600 dark:text-amber-400" title="Ganti Mode Terang/Gelap">
+          <i class="fas fa-moon dark:hidden"></i>
+          <i class="fas fa-sun hidden dark:inline"></i>
+        </button>
+      </div>
+    </div>
+
     <!-- Loading Indicator -->
     <div id="loading" class="flex flex-col justify-center items-center py-32">
-      <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-16 w-16 mb-4"></div>
-      <p class="text-gray-500 font-semibold text-sm sm:text-base animate-pulse">Menarik data dari server...</p>
+      <div class="loader ease-linear rounded-full border-4 border-t-4 border-slate-200 h-16 w-16 mb-4"></div>
+      <p class="text-slate-500 text-sm sm:text-base font-semibold animate-pulse">Menarik data dari server...</p>
     </div>
 
     <div id="dashboardContent" class="hidden space-y-4 sm:space-y-6">
       
-      <!-- HEADER GLOBAL (Statik) -->
-      <div class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-200 overflow-hidden relative">
-        <div class="absolute top-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-emerald-50 rounded-full -mr-20 -mt-20 opacity-60 pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-48 h-48 sm:w-64 sm:h-64 bg-teal-50 rounded-full -ml-20 -mb-20 opacity-60 pointer-events-none"></div>
+      <!-- HEADER GLOBAL -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden relative">
+        <div class="absolute top-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-theme/10 rounded-full -mr-20 -mt-20 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-48 h-48 sm:w-64 sm:h-64 bg-teal-500/10 rounded-full -ml-20 -mb-20 pointer-events-none"></div>
 
         <div class="p-5 sm:p-8 md:p-10 relative z-10 flex flex-col lg:flex-row gap-6 lg:gap-10 justify-between items-center lg:items-stretch">
           
           <!-- Kiri: Info Masjid & Kontak -->
           <div class="flex-1 w-full">
-            <div class="inline-block bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold tracking-wide mb-3">TAHAP 3</div>
-            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-800 mb-4 sm:mb-6 leading-tight">
-              Pembangunan Masjid <span class="text-emerald-600">AHIBS</span>
+            <div class="inline-block bg-theme/10 text-theme px-3 py-1 rounded-full text-xs font-bold tracking-wide mb-3">TAHAP 3 - PENGADAAN AC</div>
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-4 sm:mb-6 leading-tight">
+              Pembangunan Masjid <span class="text-theme">AHIBS</span>
             </h1>
             
             <div class="space-y-3 sm:space-y-4">
-              <div class="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-xl sm:rounded-2xl border border-gray-100">
-                <div class="bg-white p-2 rounded-lg sm:rounded-xl shadow-sm shrink-0">
+              <div class="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-slate-800">
+                <div class="bg-white dark:bg-slate-800 p-2 rounded-lg sm:rounded-xl shadow-sm shrink-0 border border-slate-100 dark:border-slate-700">
                   <img src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Bank_Syariah_Indonesia.svg" alt="BSI" class="h-6 sm:h-8 object-contain">
                 </div>
                 <div class="min-w-0">
-                  <p class="text-[11px] sm:text-xs text-gray-500 uppercase font-bold tracking-wider mb-0.5 sm:mb-1">Rekening Infaq</p>
-                  <p class="text-lg sm:text-xl md:text-2xl font-black text-gray-800 tracking-wide truncate">8888-55-1160</p>
-                  <p class="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">a.n <span class="font-bold text-gray-800">AL HANIF CILEGON</span></p>
+                  <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider mb-0.5 sm:mb-1">Rekening Infaq</p>
+                  <p class="text-lg sm:text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-wide truncate">8888-55-1160</p>
+                  <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-0.5 sm:mt-1">a.n <span class="font-bold text-slate-900 dark:text-white">AL HANIF CILEGON</span></p>
                 </div>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 sm:pt-2 text-xs sm:text-sm">
                 <div class="flex items-center gap-3">
-                  <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0"><i class="far fa-calendar-alt"></i></div>
+                  <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-500 flex items-center justify-center shrink-0"><i class="far fa-calendar-alt"></i></div>
                   <div class="min-w-0">
-                    <p class="text-[10px] sm:text-xs text-gray-500 font-semibold">Periode Keseluruhan</p>
-                    <p class="font-bold text-gray-700 truncate" id="periodeData">-</p>
+                    <p class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-semibold">Periode Keseluruhan</p>
+                    <p class="font-bold text-slate-700 dark:text-slate-300 truncate" id="periodeData">-</p>
                   </div>
                 </div>
                 <div class="flex items-center gap-3">
-                  <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-green-50 text-green-500 flex items-center justify-center shrink-0"><i class="fab fa-whatsapp text-base sm:text-lg"></i></div>
+                  <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-500 flex items-center justify-center shrink-0"><i class="fab fa-whatsapp text-base sm:text-lg"></i></div>
                   <div class="min-w-0">
-                    <p class="text-[10px] sm:text-xs text-gray-500 font-semibold">Konfirmasi Donasi</p>
-                    <a href="https://wa.me/6282152224427" target="_blank" class="font-bold text-green-600 hover:text-green-700 hover:underline truncate block">0821-522-AHIBS (24427)</a>
+                    <p class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-semibold">Konfirmasi Donasi</p>
+                    <a href="https://wa.me/6282152224427" target="_blank" class="font-bold text-emerald-600 dark:text-emerald-400 hover:underline truncate block">0821-522-AHIBS (24427)</a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Kanan: Progress Bar & QRIS (Mobile Friendly Stack) -->
+          <!-- Kanan: Progress Bar & QRIS -->
           <div class="flex-1 w-full flex flex-col sm:flex-row gap-4 sm:gap-6">
-            <!-- Progress Bar -->
-            <div class="flex-1 flex flex-col justify-center bg-gray-800 text-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 shadow-lg relative overflow-hidden">
+            <div class="flex-1 flex flex-col justify-center bg-slate-900 dark:bg-slate-950 text-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 shadow-lg relative overflow-hidden border border-slate-800">
               <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -mr-10 -mt-10"></div>
               
-              <p class="text-gray-400 font-semibold text-xs sm:text-sm mb-1">Total Kebutuhan Dana</p>
+              <p class="text-slate-400 font-semibold text-xs sm:text-sm mb-1">Total Kebutuhan Dana</p>
               <p class="text-2xl sm:text-3xl font-black mb-4 sm:mb-6" id="kebutuhanText">Rp 0</p>
 
-              <div class="w-full bg-gray-700 rounded-full h-4 sm:h-5 mb-3 overflow-hidden shadow-inner p-1">
-                <div id="progressBar" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full transition-all duration-1000 ease-out relative" style="width: 0%">
-                  <div class="absolute top-0 left-0 right-0 bottom-0 bg-white opacity-20 rounded-full"></div>
-                </div>
+              <div class="w-full bg-slate-800 rounded-full h-4 sm:h-5 mb-3 overflow-hidden shadow-inner p-1">
+                <div id="progressBar" class="bg-gradient-to-r from-theme to-teal-400 h-full rounded-full transition-all duration-1000 ease-out relative" style="width: 0%"></div>
               </div>
 
               <div class="space-y-2 sm:space-y-3 mt-3 sm:mt-4">
@@ -98,7 +195,7 @@
                     <p class="text-lg sm:text-xl font-black text-emerald-400" id="terkumpulPersen">0%</p>
                   </div>
                 </div>
-                <div class="h-px w-full bg-gray-700"></div>
+                <div class="h-px w-full bg-slate-800"></div>
                 <div class="flex justify-between items-end">
                   <div>
                     <p class="text-[10px] sm:text-xs text-orange-400 font-semibold uppercase tracking-wider">Kekurangan</p>
@@ -113,53 +210,49 @@
             </div>
 
             <!-- QRIS Card -->
-            <div class="w-full sm:w-44 md:w-48 bg-white border-2 border-dashed border-gray-300 rounded-2xl sm:rounded-3xl p-4 flex flex-col items-center justify-center bg-qris shrink-0 mx-auto">
-              <p class="text-xs sm:text-sm font-black text-gray-800 tracking-widest mb-2 sm:mb-3">KODE QRIS</p>
-              <div class="bg-white p-2 rounded-xl shadow-sm border border-gray-100 w-32 sm:w-full aspect-square flex items-center justify-center">
-                <img src="https://drive.google.com/uc?id=1mQF86MraEDnJWTCxUM27Xnn26tEGQzOb" alt="QRIS Masjid AHIBS" class="w-full h-full object-contain">
+            <div class="w-full sm:w-44 md:w-48 bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl sm:rounded-3xl p-4 flex flex-col items-center justify-center bg-qris shrink-0 mx-auto">
+              <p class="text-xs sm:text-sm font-black text-slate-800 dark:text-slate-100 tracking-widest mb-2 sm:mb-3">KODE QRIS</p>
+              <div class="bg-white p-2 rounded-xl shadow-sm border border-slate-100 w-32 sm:w-full aspect-square flex items-center justify-center">
+                <img src="https://lh3.googleusercontent.com/d/1mQF86MraEDnJWTCxUM27Xnn26tEGQzOb" alt="QRIS Masjid AHIBS" class="w-full h-full object-contain">
               </div>
-              <p class="text-[11px] sm:text-xs text-center font-semibold text-gray-500 mt-2 sm:mt-3">Scan untuk Donasi<br>Lebih Mudah</p>
+              <p class="text-[11px] sm:text-xs text-center font-semibold text-slate-500 dark:text-slate-400 mt-2 sm:mt-3">Scan untuk Donasi lebih mudah</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- FILTER BAR AREA (Mobile Optimized) -->
-      <div class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-200 p-4 sm:p-5 flex flex-col gap-3 sm:gap-4 z-20 relative">
+      <!-- FILTER BAR AREA -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-5 flex flex-col gap-3 sm:gap-4 z-20 relative">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:flex gap-2 sm:gap-3 items-center w-full">
           
-          <!-- Tanggal Awal & Akhir -->
           <div class="flex items-center gap-2 w-full">
-            <input type="date" id="startDate" class="bg-gray-50 border border-gray-200 text-gray-700 text-xs sm:text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5 outline-none">
-            <span class="text-gray-400 text-xs sm:text-sm font-medium shrink-0">s/d</span>
-            <input type="date" id="endDate" class="bg-gray-50 border border-gray-200 text-gray-700 text-xs sm:text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5 outline-none">
+            <input type="date" id="startDate" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm rounded-xl focus:ring-theme focus:border-theme block w-full p-2.5 outline-none">
+            <span class="text-slate-400 text-xs sm:text-sm font-medium shrink-0">s/d</span>
+            <input type="date" id="endDate" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm rounded-xl focus:ring-theme focus:border-theme block w-full p-2.5 outline-none">
           </div>
           
-          <!-- Dropdown Bulan -->
-          <select id="monthFilter" class="bg-gray-50 border border-gray-200 text-gray-700 text-xs sm:text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full lg:w-48 p-2.5 outline-none font-semibold text-emerald-700 shrink-0">
+          <select id="monthFilter" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm rounded-xl focus:ring-theme focus:border-theme block w-full lg:w-48 p-2.5 outline-none font-semibold text-theme shrink-0">
             <option value="">-- Pilih Bulan --</option>
           </select>
           
-          <!-- Tombol Aksi -->
           <div class="flex gap-2 w-full lg:w-auto shrink-0">
-            <button id="btnFilter" class="flex-1 lg:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl transition text-xs sm:text-sm flex items-center justify-center gap-2"><i class="fas fa-filter"></i> Terapkan</button>
-            <button id="btnReset" title="Reset Filter" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-2.5 px-4 rounded-xl transition text-xs sm:text-sm flex items-center justify-center"><i class="fas fa-undo"></i></button>
+            <button id="btnFilter" class="flex-1 lg:flex-none bg-theme hover:bg-theme-dark text-white font-semibold py-2.5 px-4 rounded-xl transition text-xs sm:text-sm flex items-center justify-center gap-2"><i class="fas fa-filter"></i> Terapkan</button>
+            <button id="btnReset" title="Reset Filter" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-semibold py-2.5 px-4 rounded-xl transition text-xs sm:text-sm flex items-center justify-center"><i class="fas fa-undo"></i></button>
           </div>
         </div>
         
-        <!-- Total Filtered Box -->
-        <div class="flex justify-between lg:justify-end items-center bg-emerald-50 px-4 py-3 rounded-xl border border-emerald-100 w-full">
-          <span class="text-xs text-emerald-700 font-bold uppercase tracking-wider">Total Periode Terpilih:</span>
-          <span class="text-base sm:text-lg font-black text-emerald-700 ml-2" id="filteredTotal">Rp 0</span>
+        <div class="flex justify-between lg:justify-end items-center bg-theme/10 px-4 py-3 rounded-xl border border-theme/20 w-full">
+          <span class="text-xs text-theme font-bold uppercase tracking-wider">Total Periode Terpilih:</span>
+          <span class="text-base sm:text-lg font-black text-theme ml-2" id="filteredTotal">Rp 0</span>
         </div>
       </div>
 
       <!-- GRAFIK & TABEL -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         <!-- Grafik -->
-        <div class="lg:col-span-1 bg-white rounded-2xl sm:rounded-3xl shadow-sm p-4 sm:p-6 border border-gray-200 flex flex-col">
-          <h2 class="text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
-            <i class="fas fa-chart-bar text-emerald-500"></i> Tren Donasi
+        <div class="lg:col-span-1 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-sm p-4 sm:p-6 border border-slate-200 dark:border-slate-800 flex flex-col">
+          <h2 class="text-base sm:text-lg font-bold text-slate-800 dark:text-white mb-3 sm:mb-4 flex items-center gap-2">
+            <i class="fas fa-chart-bar text-theme"></i> Tren Donasi
           </h2>
           <div class="relative flex-grow h-64 sm:h-72 lg:min-h-[300px]">
             <canvas id="donationChart"></canvas>
@@ -167,26 +260,26 @@
         </div>
 
         <!-- Tabel Mutasi -->
-        <div class="lg:col-span-2 bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-          <div class="p-4 sm:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-            <h2 class="text-base sm:text-lg font-bold text-gray-800 flex items-center gap-2">
-              <i class="fas fa-list-ul text-emerald-500"></i> Mutasi Rekening
+        <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col">
+          <div class="p-4 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/30">
+            <h2 class="text-base sm:text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+              <i class="fas fa-list-ul text-theme"></i> Mutasi Rekening
             </h2>
-            <span class="bg-green-100 text-green-800 text-[10px] uppercase font-bold px-2.5 py-1 rounded-full flex items-center gap-1" id="statusTabel">
-              <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Auto-Sync
+            <span class="bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] uppercase font-bold px-2.5 py-1 rounded-full flex items-center gap-1" id="statusTabel">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Auto-Sync
             </span>
           </div>
           <div class="overflow-x-auto max-h-[450px] sm:max-h-[500px] overflow-y-auto">
             <table class="w-full text-left border-collapse text-xs sm:text-sm">
-              <thead class="sticky top-0 bg-white shadow-sm z-10">
-                <tr class="text-gray-400 text-[10px] sm:text-xs uppercase tracking-widest">
+              <thead class="sticky top-0 bg-white dark:bg-slate-900 shadow-sm z-10">
+                <tr class="text-slate-400 text-[10px] sm:text-xs uppercase tracking-widest">
                   <th class="p-3 sm:p-4 font-semibold">Tanggal</th>
                   <th class="p-3 sm:p-4 font-semibold">Waktu</th>
                   <th class="p-3 sm:p-4 font-semibold">Nama Donatur</th>
                   <th class="p-3 sm:p-4 font-semibold text-right">Nominal (Rp)</th>
                 </tr>
               </thead>
-              <tbody id="tableBody" class="divide-y divide-gray-100">
+              <tbody id="tableBody" class="divide-y divide-slate-100 dark:divide-slate-800">
                 <!-- Data injeksi -->
               </tbody>
             </table>
@@ -204,6 +297,56 @@
     let allDonationData = [];
     let myChart = null;
 
+    // --- MANAJEMEN TEMA & DARK MODE ---
+    function setTheme(themeName) {
+      document.body.setAttribute('data-theme', themeName);
+      localStorage.setItem('ahibs_theme', themeName);
+      document.getElementById('themeDropdown').classList.add('hidden');
+    }
+
+    // Load saved settings
+    if (localStorage.getItem('ahibs_theme')) {
+      setTheme(localStorage.getItem('ahibs_theme'));
+    }
+
+    if (localStorage.getItem('ahibs_dark') === 'true' || (!localStorage.getItem('ahibs_dark') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+
+    document.getElementById('btnDarkMode').addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      localStorage.setItem('ahibs_dark', document.documentElement.classList.contains('dark'));
+    });
+
+    document.getElementById('btnThemeMenu').addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('themeDropdown').classList.toggle('hidden');
+    });
+
+    window.addEventListener('click', () => {
+      document.getElementById('themeDropdown').classList.add('hidden');
+    });
+
+    // --- PWA INSTALL LOGIC ---
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('btnInstall').style.display = 'flex';
+    });
+
+    document.getElementById('btnInstall').addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        let { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          document.getElementById('btnInstall').style.display = 'none';
+        }
+        deferredPrompt = null;
+      }
+    });
+
+    // --- FUNGSI FORMATTING & DATA ---
     function maskName(name) {
       if (!name) return "Hamba Allah";
       let cleanName = name.trim();
@@ -315,17 +458,17 @@
         lastDateRendered = dateKey;
 
         tableHtml += `
-          <tr class="hover:bg-emerald-50 transition group">
-            <td class="p-3 sm:p-4 font-semibold text-gray-500 whitespace-nowrap">${displayDate}</td>
-            <td class="p-3 sm:p-4 text-gray-400 group-hover:text-gray-600 whitespace-nowrap">${timeStr}</td>
-            <td class="p-3 sm:p-4 font-mono font-medium text-gray-700">${maskName(row.nama)}</td>
-            <td class="p-3 sm:p-4 text-right font-bold text-emerald-600 whitespace-nowrap">${formatRupiah(row.nominal)}</td>
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition group">
+            <td class="p-3 sm:p-4 font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap">${displayDate}</td>
+            <td class="p-3 sm:p-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 whitespace-nowrap">${timeStr}</td>
+            <td class="p-3 sm:p-4 font-mono font-medium text-slate-700 dark:text-slate-200">${maskName(row.nama)}</td>
+            <td class="p-3 sm:p-4 text-right font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">${formatRupiah(row.nominal)}</td>
           </tr>
         `;
       });
 
       if (sortedData.length === 0) {
-        tableHtml = `<tr><td colspan="4" class="p-8 text-center text-gray-500 font-semibold italic"><i class="fas fa-folder-open text-2xl mb-2 text-gray-300 block"></i> Tidak ada data donasi pada periode ini.</td></tr>`;
+        tableHtml = `<tr><td colspan="4" class="p-8 text-center text-slate-500 dark:text-slate-400 font-semibold italic"><i class="fas fa-folder-open text-2xl mb-2 text-slate-300 dark:text-slate-700 block"></i> Tidak ada data donasi pada periode ini.</td></tr>`;
       }
 
       document.getElementById('filteredTotal').innerText = formatRupiah(filteredTotal);
@@ -341,15 +484,16 @@
       const ctx = document.getElementById('donationChart').getContext('2d');
       if (myChart) { myChart.destroy(); }
 
+      let isDark = document.documentElement.classList.contains('dark');
+
       myChart = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: sortedDates,
           datasets: [{
             data: values,
-            backgroundColor: 'rgba(16, 185, 129, 0.8)',
-            hoverBackgroundColor: 'rgba(4, 120, 87, 1)',
-            borderRadius: 4, barPercentage: 0.6
+            backgroundColor: getComputedStyle(document.body).getPropertyValue('--color-primary').trim(),
+            borderRadius: 6, barPercentage: 0.6
           }]
         },
         options: {
@@ -357,7 +501,7 @@
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: 'rgba(17, 24, 39, 0.9)',
+              backgroundColor: isDark ? '#1e293b' : '#0f172a',
               titleFont: { size: 12, family: 'Inter' },
               bodyFont: { size: 13, family: 'Inter', weight: 'bold' },
               padding: 10, cornerRadius: 8,
@@ -365,11 +509,12 @@
             }
           },
           scales: {
-            x: { grid: { display: false }, ticks: { font: { size: 10, family: 'Inter' } } },
+            x: { grid: { display: false }, ticks: { color: isDark ? '#94a3b8' : '#64748b', font: { size: 10, family: 'Inter' } } },
             y: {
-              border: { display: false }, grid: { color: 'rgba(243, 244, 246, 1)' },
+              border: { display: false }, grid: { color: isDark ? '#1e293b' : '#f1f5f9' },
               beginAtZero: true,
               ticks: { 
+                color: isDark ? '#94a3b8' : '#64748b',
                 font: { size: 10, family: 'Inter' },
                 callback: function(value) { return value >= 1000000 ? 'Rp ' + (value / 1000000) + 'jt' : 'Rp ' + (value / 1000) + 'k'; } 
               }
@@ -417,9 +562,6 @@
       }
       
       document.getElementById('statusTabel').innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span> Filtered';
-      document.getElementById('statusTabel').classList.replace('bg-green-100', 'bg-orange-100');
-      document.getElementById('statusTabel').classList.replace('text-green-800', 'text-orange-800');
-
       renderDashboard(filtered);
     });
 
@@ -428,10 +570,7 @@
       document.getElementById('endDate').value = '';
       document.getElementById('monthFilter').value = '';
       
-      document.getElementById('statusTabel').innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Auto-Sync';
-      document.getElementById('statusTabel').classList.replace('bg-orange-100', 'bg-green-100');
-      document.getElementById('statusTabel').classList.replace('text-orange-800', 'text-green-800');
-
+      document.getElementById('statusTabel').innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Auto-Sync';
       renderDashboard(allDonationData);
     });
 
