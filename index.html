@@ -30,6 +30,14 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
     body { font-family: 'Inter', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
+    
+    /* Font Arab Klasik */
+    .arabic-text {
+      font-family: "KFGQPC Uthman Taha Naskh", "Traditional Arabic", "Amiri", "Times New Roman", serif;
+      direction: rtl;
+      line-height: 2.2;
+    }
+
     .loader { border-top-color: var(--color-primary); animation: spinner 1.5s linear infinite; }
     @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .bg-qris { background-image: radial-gradient(#d1d5db 1px, transparent 1px); background-size: 10px 10px; }
@@ -66,7 +74,7 @@
     }
   </style>
 
-  <!-- PWA Manifest Dinamis Sederhana -->
+  <!-- PWA Manifest -->
   <link rel="manifest" href="data:application/manifest+json,{
     'name': 'Infaq Masjid AHIBS',
     'short_name': 'InfaqAHIBS',
@@ -85,20 +93,18 @@
 
   <div class="max-w-7xl mx-auto space-y-4 sm:space-y-6">
     
-    <!-- TOP UTILITIES BAR (Dark Mode, Theme, PWA Install) -->
+    <!-- TOP UTILITIES BAR -->
     <div class="flex flex-wrap justify-between items-center bg-white dark:bg-slate-900 px-4 py-3 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 gap-3">
       <div class="flex items-center gap-2">
         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-        <span class="text-xs font-bold tracking-wide uppercase text-slate-500 dark:text-slate-400">Masjid AHIBS</span>
+        <span class="text-xs font-bold tracking-wide uppercase text-slate-500 dark:text-slate-400">Masjid Imam An-Nawawi</span>
       </div>
       
       <div class="flex items-center gap-2">
-        <!-- Tombol Install PWA -->
         <button id="btnInstall" class="hidden items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition shadow-sm">
           <i class="fas fa-download"></i> Install App
         </button>
 
-        <!-- Dropdown Admin Tema -->
         <div class="relative">
           <button id="btnThemeMenu" class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold px-3 py-2 rounded-xl transition">
             <i class="fas fa-palette text-theme"></i> <span class="hidden sm:inline">Tema</span>
@@ -111,7 +117,6 @@
           </div>
         </div>
 
-        <!-- Toggle Dark/Light Mode -->
         <button id="btnDarkMode" class="w-9 h-9 flex items-center justify-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition text-slate-600 dark:text-amber-400" title="Ganti Mode Terang/Gelap">
           <i class="fas fa-moon dark:hidden"></i>
           <i class="fas fa-sun hidden dark:inline"></i>
@@ -119,10 +124,34 @@
       </div>
     </div>
 
-    <!-- Loading Indicator -->
-    <div id="loading" class="flex flex-col justify-center items-center py-32">
-      <div class="loader ease-linear rounded-full border-4 border-t-4 border-slate-200 h-16 w-16 mb-4"></div>
-      <p class="text-slate-500 text-sm sm:text-base font-semibold animate-pulse">Menarik data dari server...</p>
+    <!-- SPLASH SCREEN / LOADING DENGAN DALIL INFAQ -->
+    <div id="loading" class="flex flex-col justify-center items-center py-16 px-4 sm:px-8 max-w-2xl mx-auto text-center">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl space-y-6 relative overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-theme to-teal-400"></div>
+        
+        <div class="w-12 h-12 mx-auto rounded-full bg-theme/10 flex items-center justify-center text-theme text-xl">
+          <i class="fas fa-mosque"></i>
+        </div>
+
+        <!-- Teks Arab Keutamaan Infaq -->
+        <p class="arabic-text text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 px-2">
+          مَنْ بَنَى مَسْجِدًا لِلَّهِ كَمَفْحَصِ قَطَاةٍ أَوْ أَصْغَرَ بَنَى اللَّهُ لَهُ بَيْتًا فِى الْجَنَّةِ
+        </p>
+
+        <!-- Terjemahan -->
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 italic leading-relaxed px-4">
+          “Siapa yang membangun masjid karena Allah walaupun hanya selubang tempat burung bertelur atau lebih kecil, maka Allah bangunkan baginya (rumah) seperti itu pula di surga.”
+        </p>
+
+        <p class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+          (HR. Ibnu Majah no. 738 — Shahih)
+        </p>
+
+        <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col items-center gap-3">
+          <div class="loader ease-linear rounded-full border-3 border-t-3 border-slate-200 dark:border-slate-700 h-8 w-8"></div>
+          <p class="text-xs font-medium text-slate-500 dark:text-slate-400 animate-pulse">Menghubungkan ke server mutasi...</p>
+        </div>
+      </div>
     </div>
 
     <div id="dashboardContent" class="hidden space-y-4 sm:space-y-6">
@@ -134,11 +163,10 @@
 
         <div class="p-5 sm:p-8 md:p-10 relative z-10 flex flex-col lg:flex-row gap-6 lg:gap-10 justify-between items-center lg:items-stretch">
           
-          <!-- Kiri: Info Masjid & Kontak -->
           <div class="flex-1 w-full">
-            <div class="inline-block bg-theme/10 text-theme px-3 py-1 rounded-full text-xs font-bold tracking-wide mb-3">PERIODE 2026</div>
+            <div class="inline-block bg-theme/10 text-theme px-3 py-1 rounded-full text-xs font-bold tracking-wide mb-3">TAHAP 3 - PENGADAAN AC</div>
             <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-4 sm:mb-6 leading-tight">
-              Pembangunan <span class="text-theme">Masjid AHIBS</span>
+              Pembangunan Masjid <span class="text-theme">AHIBS</span>
             </h1>
             
             <div class="space-y-3 sm:space-y-4">
@@ -172,7 +200,6 @@
             </div>
           </div>
 
-          <!-- Kanan: Progress Bar & QRIS -->
           <div class="flex-1 w-full flex flex-col sm:flex-row gap-4 sm:gap-6">
             <div class="flex-1 flex flex-col justify-center bg-slate-900 dark:bg-slate-950 text-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 shadow-lg relative overflow-hidden border border-slate-800">
               <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -mr-10 -mt-10"></div>
@@ -209,13 +236,12 @@
               </div>
             </div>
 
-            <!-- QRIS Card -->
             <div class="w-full sm:w-44 md:w-48 bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl sm:rounded-3xl p-4 flex flex-col items-center justify-center bg-qris shrink-0 mx-auto">
               <p class="text-xs sm:text-sm font-black text-slate-800 dark:text-slate-100 tracking-widest mb-2 sm:mb-3">KODE QRIS</p>
               <div class="bg-white p-2 rounded-xl shadow-sm border border-slate-100 w-32 sm:w-full aspect-square flex items-center justify-center">
                 <img src="https://lh3.googleusercontent.com/d/1mQF86MraEDnJWTCxUM27Xnn26tEGQzOb" alt="QRIS Masjid AHIBS" class="w-full h-full object-contain">
               </div>
-              <p class="text-[11px] sm:text-xs text-center font-semibold text-slate-500 dark:text-slate-400 mt-2 sm:mt-3">Scan untuk Donasi lebih mudah</p>
+              <p class="text-[11px] sm:text-xs text-center font-semibold text-slate-500 dark:text-slate-400 mt-2 sm:mt-3">Scan untuk Donasi<br>Lebih Mudah</p>
             </div>
           </div>
         </div>
@@ -249,7 +275,6 @@
 
       <!-- GRAFIK & TABEL -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        <!-- Grafik -->
         <div class="lg:col-span-1 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-sm p-4 sm:p-6 border border-slate-200 dark:border-slate-800 flex flex-col">
           <h2 class="text-base sm:text-lg font-bold text-slate-800 dark:text-white mb-3 sm:mb-4 flex items-center gap-2">
             <i class="fas fa-chart-bar text-theme"></i> Tren Donasi
@@ -259,7 +284,6 @@
           </div>
         </div>
 
-        <!-- Tabel Mutasi -->
         <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col">
           <div class="p-4 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/30">
             <h2 class="text-base sm:text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
@@ -297,14 +321,12 @@
     let allDonationData = [];
     let myChart = null;
 
-    // --- MANAJEMEN TEMA & DARK MODE ---
     function setTheme(themeName) {
       document.body.setAttribute('data-theme', themeName);
       localStorage.setItem('ahibs_theme', themeName);
       document.getElementById('themeDropdown').classList.add('hidden');
     }
 
-    // Load saved settings
     if (localStorage.getItem('ahibs_theme')) {
       setTheme(localStorage.getItem('ahibs_theme'));
     }
@@ -327,7 +349,6 @@
       document.getElementById('themeDropdown').classList.add('hidden');
     });
 
-    // --- PWA INSTALL LOGIC ---
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -346,7 +367,6 @@
       }
     });
 
-    // --- FUNGSI FORMATTING & DATA ---
     function maskName(name) {
       if (!name) return "Hamba Allah";
       let cleanName = name.trim();
