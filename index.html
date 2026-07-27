@@ -205,8 +205,16 @@
 // GANTI dengan URL Aplikasi Web Google Apps Script Anda yang baru disalin
     const API_URL = 'https://script.google.com/macros/s/AKfycbyrQn8r7ku3Xduj1deiOcXKUIaLKVHriOEclS9DiHudqVqB_UuIuOIVx4LfIs-s-Wxk/exec';
 
-    fetch(API_URL)
-      .then(response => response.json())
+    fetch(API_URL, {
+      method: 'GET',
+      redirect: 'follow'
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
       .then(data => {
         processData(data);
       })
@@ -215,7 +223,7 @@
         document.getElementById('loading').innerHTML = `
           <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg max-w-lg mx-auto text-center shadow-sm">
             <h3 class="text-red-700 font-bold text-lg mb-2"><i class="fas fa-wifi"></i> Gagal Terhubung</h3>
-            <p class="text-red-600">Tidak dapat mengambil data dari server. Periksa koneksi internet Anda.</p>
+            <p class="text-red-600">Tidak dapat mengambil data dari server. Pastikan Deploy Apps Script sudah diset ke 'Siapa saja' (Anyone).</p>
           </div>
         `;
       });
