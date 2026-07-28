@@ -49,19 +49,7 @@
     body[data-theme="sunset"] { --color-primary: #c2410c; --color-primary-dark: #9a3412; --color-primary-light: #fff7ed; }
   </style>
 
-  <link rel="manifest" href="data:application/manifest+json,{
-    'name': 'Infaq Masjid AHIBS',
-    'short_name': 'InfaqAHIBS',
-    'start_url': '.',
-    'display': 'standalone',
-    'background_color': '#f8fafc',
-    'theme_color': '#059669',
-    'icons': [{
-      'src': 'https://lh3.googleusercontent.com/d/1mQF86MraEDnJWTCxUM27Xnn26tEGQzOb',
-      'sizes': '192x192',
-      'type': 'image/png'
-    }]
-  }">
+<link rel="manifest" href='data:application/manifest+json,{"name":"Infaq Masjid AHIBS","short_name":"InfaqAHIBS","start_url":".","display":"standalone","background_color":"#f8fafc","theme_color":"#059669","icons":[{"src":"https://lh3.googleusercontent.com/d/1mQF86MraEDnJWTCxUM27Xnn26tEGQzOb","sizes":"192x192","type":"image/png"}]}'>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 p-3 sm:p-6 md:p-8" data-theme="emerald">
 
@@ -456,15 +444,17 @@
       
       data.forEach(row => { grandTotal += row.nominal; });
 
-      let targetDana = parseFloat(settings.target_dana) || 2989940000;
-      let kekurangan = target_dana - grandTotal;
+      // Membaca target dana dari setting Sheet, berikan fallback 3 Milyar jika kosong
+      let targetDanaVal = settings && settings.target_dana ? parseFloat(settings.target_dana) : 2989940000;
+      let kekurangan = targetDanaVal - grandTotal;
       if (kekurangan < 0) kekurangan = 0;
-      let persenTerkumpul = (grandTotal / target_dana) * 100;
+      
+      let persenTerkumpul = (grandTotal / targetDanaVal) * 100;
       let persenKurang = 100 - persenTerkumpul;
       if (persenTerkumpul > 100) persenTerkumpul = 100;
 
       document.getElementById('periodeData').innerText = `${formatTanggalPendek(minDate)} ${formatTanggalPendekEnd(maxDate)}`;
-      document.getElementById('kebutuhanText').innerText = formatRupiah(target_dana);
+      document.getElementById('kebutuhanText').innerText = formatRupiah(targetDanaVal);
       document.getElementById('terkumpulText').innerText = formatRupiah(grandTotal);
       document.getElementById('terkumpulPersen').innerText = persenTerkumpul.toLocaleString('id-ID', { maximumFractionDigits: 2 }) + '%';
       document.getElementById('kurangText').innerText = formatRupiah(kekurangan);
