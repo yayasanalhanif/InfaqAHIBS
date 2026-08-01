@@ -398,7 +398,7 @@
     function maskName(name) {
       if (!name) return "Hamba Allah";
       let cleanName = name.trim();
-      const exceptions = ['HAMBA ALLAH', 'FLIP', 'OVO', 'GOPAY', 'DANA', 'SHOPEEPAY', 'LINKAJA', 'SPAY', 'QRIS'];
+      const exceptions = ['HAMBA ALLAH', 'FLIP', 'OVO', 'GOPAY', 'DANA', 'SHOPEEPAY', 'LINKAJA', 'SPAY', 'QRIS', 'Kotak Infaq', 'QR'];
       if (exceptions.includes(cleanName.toUpperCase())) return cleanName.toUpperCase();
       
       let words = cleanName.split(' ');
