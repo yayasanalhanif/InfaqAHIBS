@@ -395,18 +395,30 @@
       }
     });
 
+// Masking sesuai kaidah Amiza: A***d Z****i
     function maskName(name) {
       if (!name) return "Hamba Allah";
       let cleanName = name.trim();
-      const exceptions = ['HAMBA ALLAH', 'FLIP', 'OVO', 'GOPAY', 'DANA', 'SHOPEEPAY', 'LINKAJA', 'SPAY', 'QRIS', 'Kotak Infaq', 'QR'];
+
+      // Cek pola transfer QR Pembangunan AHIBS dan ubah langsung jadi QRIS
+      if (/^QR\s+\d+\s+\d+\s+PEMBANGUNAN\s+AHIBS/i.test(cleanName)) {
+        return "QRIS";
+      }
+
+      const exceptions = ['HAMBA ALLAH', 'FLIP', 'OVO', 'GOPAY', 'DANA', 'SHOPEEPAY', 'LINKAJA', 'SPAY', 'QRIS'];
       if (exceptions.includes(cleanName.toUpperCase())) return cleanName.toUpperCase();
-      
+
       let words = cleanName.split(' ');
       let maskedWords = words.map(word => {
         if (word.length <= 1) return word;
         if (word.length === 2) return word[0] + '*';
-        return word[0] + '*'.repeat(word.length - 2) + word[word.length - 1];
+
+        let firstChar = word[0];
+        let lastChar = word[word.length - 1];
+        let middleStars = '*'.repeat(word.length - 2);
+        return firstChar + middleStars + lastChar;
       });
+
       return maskedWords.join(' ');
     }
 
